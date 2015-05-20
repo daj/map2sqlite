@@ -79,10 +79,10 @@
 //
 // table "tiles" - contains the tile images
 //
-//    SQL: create table tiles(tilekey integer primary key, image blob)
+//    SQL: create table tiles(tile_data integer primary key, image blob)
 //
 //    The tile images are stored in the "image" column as a blob. 
-//    The primary key of the table is the "tilekey" which is computed
+//    The primary key of the table is the "tile_data" which is computed
 //    with the RMTileKey function (found in RMTile.h)
 //
 //    uint64_t RMTileKey(RMTile tile);
@@ -256,7 +256,7 @@ void createMapDB(FMDatabase* db, NSString* mapDir) {
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
 	// import the tiles
-	executeUpdate(db, @"create table tiles(tilekey integer primary key, zoom_level integer, row integer, col integer, image blob)");
+	executeUpdate(db, @"create table tiles(tile_data integer primary key, zoom_level integer, tile_row integer, tile_column integer, image blob)");
 	
 	// OpenStreetMap tile structure
 	// 
@@ -296,7 +296,7 @@ void createMapDB(FMDatabase* db, NSString* mapDir) {
 			
 			NSData* image = [[NSData alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", mapDir, f]];
 			if (image) {
-				executeUpdate(db, @"insert into tiles (tilekey, zoom_level, row, col, image) values (?, ?, ?, ?, ?)",
+				executeUpdate(db, @"insert into tiles (tile_data, zoom_level, tile_row, tile_column, image) values (?, ?, ?, ?, ?)",
 							  [NSNumber numberWithLongLong:RMTileKey(zoom, col, row)],
 							  [NSNumber numberWithInt:zoom], 
 							  [NSNumber numberWithInt:row], 
@@ -316,7 +316,7 @@ void createMapDB(FMDatabase* db, NSString* mapDir) {
 	
 	// add coverage area and center
 	// print map dimensions per zoom level
-	FMResultSet* rs = executeQuery(db, @"select min(row) min_row, min(col) min_col, max(row) max_row, max(col) max_col from tiles where zoom_level = ?",	[NSNumber numberWithInt:maxZoom]);
+	FMResultSet* rs = executeQuery(db, @"select min(tile_row) min_row, min(tile_column) min_col, max(tile_row) max_row, max(tile_column) max_col from tiles where zoom_level = ?",	[NSNumber numberWithInt:maxZoom]);
 	while ([rs next]) {
 		int minRow = [rs intForColumn:@"min_row"];
 		int minCol = [rs intForColumn:@"min_col"];
@@ -365,7 +365,7 @@ void showMapDBStats(FMDatabase* db, NSString* dbFile, NSString* mapDir) {
 	[rs close];
 	
 	// print map dimensions per zoom level
-	rs = executeQuery(db, @"select zoom_level, count(zoom_level) count, min(row) min_row, min(col) min_col, max(row) max_row, max(col) max_col from tiles group by zoom_level");
+	rs = executeQuery(db, @"select zoom_level, count(zoom_level) count, min(tile_row) min_row, min(tile_column) min_col, max(tile_row) max_row, max(tile_column) max_col from tiles group by zoom_level");
 	while ([rs next]) {
 		int zoom = [rs intForColumn:@"zoom_level"];
 		int count = [rs intForColumn:@"count"];
