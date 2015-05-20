@@ -1,6 +1,8 @@
-This is the original source code of the map2sqlite-1.0.tar.bz2 tool to generate a sqlite3
-database for the RMDBTileSource of the route-me project for creating offline maps for
-the iPhone. Please note that this code is from 2009. Use at your own risk. 
+This fork of map2sqlite is an attempt to get it to work with the [Mapbox iOS SDK](https://github.com/mapbox/mapbox-ios-sdk).  It is still a work in progress.
 
-Have fun :)
-Frank
+map2sqlite is an OS X binary, only for use on Macs.
+
+It is intended to be used to convert OpenStreetMap map tiles downloaded with `downloadosmtiles.pl` into a SQLite database that can be used with the Mapbox iOS SDK.
+
+The original instructions I was following are here: 
+http://shiki.me/blog/offline-maps-in-ios-using-openstreetmap-and-route-me/
