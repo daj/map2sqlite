@@ -50,11 +50,11 @@
 //
 // The following tables are created and populated.
 //
-// table "preferences" - contains the map meta data as name/value pairs
+// table "metadata" - contains the map meta data as name/value pairs
 //
-//    SQL: create table preferences(name text primary key, value text)
+//    SQL: create table metadata(name text primary key, value text)
 //
-//    The preferences table must at least contain the following
+//    The metadata table must at least contain the following
 //    values for the tile source to function properly.
 //
 //      * map.minZoom           - minimum supported zoom level
@@ -229,7 +229,7 @@ void executeUpdate(FMDatabase* db, NSString* sql, ...) {
  */
 
 void addStringAsPref(FMDatabase* db, NSString* name, NSString* value) {
-	executeUpdate(db, @"insert into preferences (name, value) values (?,?)", name, value);
+	executeUpdate(db, @"insert into metadata (name, value) values (?,?)", name, value);
 }
 
 void addFloatAsPref(FMDatabase* db, NSString* name, float value) {
@@ -241,7 +241,7 @@ void addIntAsPref(FMDatabase* db, NSString* name, int value) {
 }
 
 void createPrefs(FMDatabase* db) {
-	executeUpdate(db, @"create table preferences(name text primary key, value text)");
+	executeUpdate(db, @"create table metadata(name text primary key, value text)");
 }
 
 /* ----------------------------------------------------------------------
@@ -309,7 +309,7 @@ void createMapDB(FMDatabase* db, NSString* mapDir) {
 		}
 	}
 	
-	// add mandatory map meta data to the preferences table
+	// add mandatory map meta data to the metadata table
 	addIntAsPref(db, kMinZoomKey, minZoom);
 	addIntAsPref(db, kMaxZoomKey, maxZoom);
 	addIntAsPref(db, kTileSideLengthKey, 256);
@@ -437,7 +437,7 @@ int main (int argc, const char * argv[]) {
 	// cache the statements as we're using them a lot
 	db.shouldCacheStatements = YES;
 	
-	// create the preferences table
+	// create the metadata table
 	createPrefs(db);
 	
 	// import the map
